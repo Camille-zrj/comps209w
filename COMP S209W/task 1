@@ -1,0 +1,93 @@
+class LibraryItem:
+def __init__(self, item_id, title, author):
+    self._item_id = item_id         
+    self._title = title
+    self._author = author
+    self._is_borrowed = False
+
+def item_id(self):
+    return self._item_id
+    
+def title(self):
+    return self._title
+
+def is_borrowed(self):
+    return self._is_borrowed
+
+def is_borrowed(self, value):
+    self._is_borrowed = value
+
+def get_item_type(self):
+        pass
+
+def calculate_late_fee(self, days_late):
+    return days_late * 0.5
+    
+ def __str__(self):
+     status = "Borrowed" if self._is_borrowed else "Available"
+     return f"[{self.get_item_type()}] {self._title} by {self._author} - {status}"
+     
+class Book(LibraryItem):
+    def get_item_type(self):
+        return "Book"
+        
+class DVD(LibraryItem):
+    def get_item_type(self):
+        return "DVD"
+
+    def calculate_late_fee(self, days_late):
+        return days_late * 1.0
+        
+class Member:
+    def __init__(self, member_id, name):
+        self._member_id = member_id
+        self._name = name
+        self._borrowed_items = []    
+
+    def member_id(self):
+        return self._member_id
+
+    def name(self):
+        return self._name
+
+    def borrow_item(self, loan):
+        self._borrowed_items.append(loan)
+
+    def return_item(self, loan):
+        if loan in self._borrowed_items:
+            self._borrowed_items.remove(loan)
+
+    def get_borrowed_loans(self):
+        return self._borrowed_items
+
+    def __str__(self):
+        return f"Member {self._member_id}: {self._name}"
+        
+class Loan:
+    def __init__(self, item, member, due_days=14):
+        self._item = item
+        self._member = member
+        self._borrow_date = datetime.now()
+        self._due_date = self._borrow_date + timedelta(days=due_days)
+        self._return_date = None
+
+    def item(self):
+        return self._item
+
+    def member(self):
+        return self._member
+
+    def due_date(self):
+        return self._due_date
+
+    def close_loan(self):
+        self._return_date = datetime.now()
+        self._item.is_borrowed = False
+
+    def calculate_fine(self):
+        if self._return_date is None:
+            return 0
+        days_late = (self._return_date - self._due_date).days
+        if days_late > 0:
+            return self._item.calculate_late_fee(days_late)
+        return 0
